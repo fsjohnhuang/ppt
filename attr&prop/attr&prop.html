@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Any Topic Conf.</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" type="text/css" href="../impress-demo.css">
+	<style type="text/css">
+		.confName{
+			text-shadow: 2px 2px #333;
+			font-weight: bold;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<div id="impress" class="impress-not-supported">
+		<div class="step" data-x="0" data-y="0" data-scale="3">
+
+			<div id="first" style="text-shadow: 4px 4px #888;">Attr &amp; Prop For JS</div>
+			<div style="font-size: 40px;text-shadow: 2px 2px #888;">&emsp;JS中的 特性 与 属性</div>
+		</div>
+		<div class="step" data-x="0" data-y="1500">
+			<div>&lt;a id="test" href="dummy" onclick="console.log('hello world!');" style="color:red;" myId="confused"&gt;&lt;/a&gt;</div>
+		</div>
+		<div class="step" data-x="0" data-y="3000">
+			<div>如何获取id的属性值？</div>
+			<div>&emsp;方式一：aDom.id</div>
+			<div>&emsp;方式二：aDom.getAttribute('id')</div>
+		</div>
+		<div class="step" data-x="0" data-y="4500">
+			<div>如何获取myId的属性值？</div>
+			<div>&emsp;方式一：aDom.myId</div>
+			<div>&emsp;方式二：aDom.getAttribute('myId')</div>
+		</div>
+		<div class="step" data-x="0" data-y="6000">
+			<div>很抱歉，aDom.myId得到的是一个undefined</div>
+			<div style="font-weight:bold;color:red;">因为特性(attr) 和 属性(prop)是不同的</div>
+		</div>
+		<div class="step" data-x="0" data-y="7500">
+			<img name="html5" src="./prop_attr.png"/> 
+			<div style="font-size: 30px;">
+			一、custom property，通过点方式操作<br/>
+			二、standard attribute，通过点方式和getAttribute方式操作<br/>
+			三、custom attribute，通过getAttribute方式操作<br/>
+			</div>
+		</div>
+		<div class="step" data-x="0" data-y="0" data-rotate-x="90" data-scale="3">
+			<span style="font-weight:bold;">
+				核心 
+			</span>
+			<span style="font-weight:bold;text-shadow:6px 6px #888;">
+				STANDARD ATTRIBUTE
+			</span>
+		</div>
+		<div class="step" data-x="0" data-y="1500" data-rotate-x="90">
+			<div>
+				普通属性：id、name等
+			</div>
+		</div>
+		<div class="step" data-x="0" data-y="3000" data-rotate-x="90">
+			<div>
+				样式属性：style
+			</div>
+		</div>
+		<div class="step" data-x="0" data-y="4500" data-rotate-x="90">
+			<div>
+				Url属性：href、src等
+			</div> 
+		</div>
+		<div class="step" data-x="0" data-y="6000" data-rotate-x="90">
+			<div>
+				事件钩子：onclick等
+			</div>
+		</div>
+		<div class="step" data-x="0" data-y="7500" data-rotate-x="90">
+			<div>
+				布尔属性：checked、disabled等
+			</div>
+		</div>
+		<div class="step" data-x="0" data-y="9000" data-rotate-x="90">
+			<div>
+				值属性：value属性
+			</div>
+		</div>
+		<div class="step" data-x="0" data-y="0" data-rotate-y="90">
+			<div>
+				最后，IE5.5、IE6和IE7的Attr和Prop是一样的。
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../impress.js"></script>
+	<script type="text/javascript">
+		var api = impress();
+		api.init();
+	</script>
+</body>
+</html>

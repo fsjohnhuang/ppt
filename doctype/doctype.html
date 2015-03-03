@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Any Topic Conf.</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" type="text/css" href="../impress-demo.css">
+	<style type="text/css">
+		.confName{
+			text-shadow: 2px 2px #333;
+			font-weight: bold;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<div id="impress" class="impress-not-supported">
+		<div class="step" data-x="0" data-y="0" data-scale="3">
+			<div id="first">什么是DTD？</div>
+		</div>
+		<div class="step" data-x="0" data-y="0" data-rotate-x="90" data-scale="2">
+			<div>DTD的最初设计目的</div>
+		</div>
+		<div class="step" data-x="-200" data-y="100" data-rotate="90"  data-rotate-x="90">
+			<div><span id="x" style="color:red;visibility:hidden;">X</span>HTML</div>
+		</div>
+		<div class="step" data-x="400" data-y="-400" data-rotate-x="90">
+			<div>Strict</div>
+			<div>严格模式</div>
+		</div>
+		<div class="step" data-x="0" data-y="-1000" data-rotate-x="90">
+			<div>Transitional</div>
+			<div>过渡模式</div>
+		</div>
+		<div class="step" data-x="0" data-y="0" data-rotate-x="90" data-rotate="-90">
+			<div>Frameset</div>
+			<div>框架模式</div>
+		</div>
+		<div class="step" data-x="0" data-y="0" data-rotate-y="90">
+			<div>&lt;!DOCTYPE html PUBLIC "公共标识" "系统标识"&gt;</div>
+		</div>
+		<div class="step" data-x="0" data-y="300" data-rotate-y="-90">
+			<div>DTD的实际作用</div>
+		</div>
+		<div class="step" data-x="-300" data-y="450" data-rotate-y="-90">
+			<div>文档模式</div>
+		</div>
+		<div class="step" data-x="0" data-y="350" data-rotate="-90" data-rotate-y="-90">
+			<div>1. 怪异模式</div>
+			<div>2. 标准模式</div>
+		</div>
+		<div class="step" data-x="1000" data-y="0" data-rotate="-90" data-rotate-y="-180">
+			<img name="html5" style="visibility:hidden;" src="./10.jpg"/> 
+		</div>
+		<div class="step" data-x="0" data-y="0" data-rotate-y="-180" data-scale="2">
+			<div name="html5" style="visibility:hidden;" >&lt;!DOCTYPE html&gt;</div>
+		</div>
+		<div id="overview" class="step" data-x="-200" data-y="-500" data-scale="3"></div>
+	</div>
+	<script type="text/javascript" src="../impress.js"></script>
+	<script type="text/javascript">
+		document.body.onkeydown = function(e){
+			if (e.keyCode === 88){
+				document.getElementById('x').style.visibility = 'visible';
+			}
+			else if (e.keyCode === 89){
+				var nodes = document.getElementsByName('html5');
+				for (var i = 0, node; node = nodes[i++];){
+					node.style.visibility = 'visible';
+				}
+				document.getElementById('first').style.visibility = 'hidden';
+			}
+		};
+		var api = impress();
+		api.init();
+	</script>
+</body>
+</html>

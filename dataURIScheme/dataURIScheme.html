@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Any Topic Conf.</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" type="text/css" href="../impress-demo.css">
+	<style type="text/css">
+		.confName{
+			text-shadow: 2px 2px #333;
+			font-weight: bold;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<div id="impress" class="impress-not-supported">
+		<div class="step" data-x="0" data-y="0" data-scale="3">
+
+			<div id="first" style="text-shadow: 4px 4px #888;">Data URI Scheme</div>
+		</div>
+		<div class="step" data-x="0" data-y="1500">
+			<div>HTTP URI Scheme</div>
+			<div style="color:#666">&emsp;http://www.github.com</div>
+		</div>
+		<div class="step" data-x="0" data-y="3000">
+			<div>data:image/png;base64,ivsdingasjifnsgjiansgsajdiangsd</div>
+		</div>
+		<div class="step" data-x="0" data-y="4500">
+			<div>data:[&lt;mime type&gt;][;charset=&lt;charset&gt;][;&lt;encoding&gt;],&lt;encoded data&gt;</div>
+		</div>
+		<div class="step" data-x="0" data-y="6000">
+			<pre>①. data：协定名称；
+②. [&lt;mime type&gt;]：可选项，数据类型（image/png、text/plain等）；
+③. [;charset=&lt;charset&gt;]：可选项，字符集编码方式；
+④. [;&lt;encoding&gt;]：数据编码方法(US-ASCII，base64等)；
+⑤. &lt;encoded data&gt;：编码后的数据。</pre>
+		</div>
+		<div class="step" data-x="0" data-y="7500">
+			<pre>优点：
+①. 减少图片、脚本和样式等资源的请求链接数
+			</pre>
+		</div>
+		<div class="step" data-x="0" data-y="9000">
+			<pre>缺点：
+①. 不会被浏览器缓存起来
+②. 移动端性能较低
+			</pre>
+		</div>
+		<div class="step" data-x="0" data-y="10500">
+			<pre>优化方案：
+在css文件的background-image: url()中使用data uri scheme，既减少请求链接数，图片数据也随css文件被缓存起来。
+			</pre>
+		</div>
+		<div class="step" data-x="0" data-y="12000">
+			<pre>浏览器支持：
+①. 支持
+Opera 7.2+ data URI 必须小于4100字符
+IE8+ data URI必须小于32k（IE8不支持js的data URI）
+Chrome、FF和Safari无限制
+②. 不支持
+IE567
+			</pre>
+		</div>
+	</div>
+	<script type="text/javascript" src="../impress.js"></script>
+	<script type="text/javascript">
+		var api = impress();
+		api.init();
+	</script>
+</body>
+</html>

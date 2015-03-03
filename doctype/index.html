@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Any Topic Conf.</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" type="text/css" href="../impress-demo.css">
+	<style type="text/css">
+		.confName{
+			text-shadow: 2px 2px #333;
+			font-weight: bold;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<div id="impress" class="impress-not-supported">
+		<div class="step" data-x="0" data-y="0" data-scale="3">
+			<div>Open Source</div>
+			<div>开源代码</div>
+		</div>
+		<div class="step" data-x="50" data-y="0" data-rotate="90">
+			<div>Open Mind</div>
+			<div>开源思维</div>
+		</div>
+		<div class="step" data-x="150">
+			<div>Share Thinking</div>
+			<div>分享点子</div>
+		</div>
+		<div class="step" data-x="-250" data-y="-250">
+			<div>Share Exp</div>
+			<div>分享经验</div>
+		</div>
+		<div class="step" data-x="-350" data-y="-400" data-rotate="-90" data-scale="3">
+			<div class="confName" onclick="location.href='./doctype.html';">Any Topic Conf.</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../impress.js"></script>
+	<script type="text/javascript">
+		var api = impress();
+		api.init();
+	</script>
+</body>
+</html>
