@@ -1,0 +1,18 @@
+{
+  "name": "his_of_fe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "lite-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "lite-server": "^2.2.2"
+  },
+  "dependencies": {
+    "fullpage.js": "^2.8.4",
+    "jQuery": "^1.7.2"
+  }
+}

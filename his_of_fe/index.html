@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css">
+  <link rel="stylesheet" href="./node_modules/fullpage.js/jquery.fullPage.css">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./sunburst.css">
+  <script src="./node_modules/jQuery/tmp/jquery.js"></script>
+  <script src="./node_modules/fullpage.js/jquery.fullPage.js"></script>
+  <script type="text/javascript" src="https://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
+  <script src="./data/html.js"></script>
+  <script src="./data/css.js"></script>
+  <script src="./data/js.js"></script>
+  <script src="./lib/highlight.pack.js"></script>
+</head>
+<body>
+  <main id="fullpage" class="container-fluid">
+  <section class="section">
+    <h1 class="title">The Evolution of FE</h1>
+    <br><br><br><br><br>
+    <p class="tech">
+      <img src="./asset/html5.jpg" width="150" height="100">
+      <span>+</span>
+      <img src="./asset/css3.jpg" width="150" height="100">
+      <span>+</span>
+      <img src="./asset/es6.png" width="150" height="100">
+    </p>
+  </section>
+  <section class="section">
+    <div class="col-md-3 col-md-offset-4 icon-john">
+      <img src="./asset/john.png" class="img-circle" width="150" height="150">
+      <p class="name">^_^肥仔John</p>
+      <p><img src="./asset/blog.jpg" width="60" height="30"> <a href="http://fsjohnhuang.cnblogs.com">@fsjohnhuang.cnblogs.com</a></p>
+      <p><img src="./asset/github.jpg" width="30" height="30"> <a href="https://github.com/fsjohnhuang">@github.com/fsjohnhuang</a></p>
+    </div>
+  </section>
+  <section class="section">
+    <h2>Agenda</h2>
+    <ul>
+      <li><h3>1. The timeline of HTML, CSS and JavaScript</h3></li>
+      <li><h3>2. Frameworks for EF</h3></li>
+      <li><h3>3. Imperative vs. Declarative</h3></li>
+      <li><h3>4. Inherent Complexity vs. Instrumental Complexity</h3></li>
+    </ol>
+  </section>
+  <section class="section">
+    <div id="my-timeline" class="col-md-12"></div>
+  </section>
+  <section class="section">
+    <h2>What are the problems with HTML, CSS, JavaScript now? </h2>
+  </section>
+  <section class="section">
+    <h2>Frameworks</h2> <br><br>
+    <p class="framework justify-all">
+      <span class="content">
+        <img src="./asset/handlebars.png">
+        <img src="./asset/polymer.png">
+        <img src="./asset/vue.png">
+        <img src="./asset/react.jpeg">
+        <img src="./asset/angular.jpg">
+        <img src="./asset/ember.jpg">
+      </span>
+        <i class="polyfill"></i>
+    </p>
+  </section>
+  <section class="section">
+    <h2>Imperative vs. Declarative</h2><br><br>
+    <div>
+      <label>Name:</label><input name="name" placeholder="Enter Name.">
+      <input type="submit" value="Submit">
+    </div>
+    <h3>Imperative way</h3>
+    <pre class="code"><code>&lt;div id="signup"&gt;
+  &lt;label&gt;Name:&lt;/label&gt;&lt;input name="name" placeholder="Enter Name."&gt;
+  &lt;input type="submit" value="Submit" onclick="submit("#signup")"&gt;
+&lt;/div&gt;</code></pre>
+    <pre class="code"><code>function submit(containerId){
+  var kvs = {}
+  $(containerId).find('input').forEach(el => kvs[el.name] = el.value)
+  $.post({
+    url: './users',
+    data: kvs
+  })
+}</code></pre>
+    <h3>Declarative way</h3>
+    <pre class="code"><code>&lt;x-form action="./users" method="POST"&gt;
+    &lt;label&gt;Name:&lt;/label&gt;&lt;input name="name" placeholder="Enter Name."&gt;
+    &lt;input type="submit" value="Submit"&gt;    
+&lt;/x-form&gt;</code></pre>
+  </section>
+  <section class="section">
+    <h2>Inherent Complexity vs. Instrumental Complexity</h2><br><br>
+  </section>
+  </main>
+ <script>
+  hljs.initHighlightingOnLoad()
+  $('#fullpage').fullpage()
+  createStoryJS({
+    type: 'timeline',
+    width: '1300',
+    height: '650',
+    source: {
+      timeline: {
+          "headline":"The timeline of HTML, CSS and JavaScript",
+          "type":"default",
+          "text":" ",
+          "startDate":"1989",
+          "date": html.concat(css.concat(js))
+      }
+    },
+    embed_id: 'my-timeline'
+  })
+ </script>
+</body>
+</html>
