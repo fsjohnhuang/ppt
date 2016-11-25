@@ -1,0 +1,21 @@
+{
+  "name": "apm_of_js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "lite-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^2.17.5",
+    "connect-logger": "^0.0.1",
+    "debug": "^2.2.0",
+    "highlight.js": "^9.8.0",
+    "iPromise": "https://github.com/fsjohnhuang/iPromise.git",
+    "impress.js": "^0.6.0",
+    "lite-server": "^2.2.2",
+    "moment": "^2.16.0"
+  }
+}

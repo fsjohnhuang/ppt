@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="./node_modules/impress.js/css/impress-demo.css">
+	<link rel="stylesheet" href="./css/index.css">
+	<link rel="stylesheet" href="./node_modules/highlight.js/styles/default.css">
+</head>
+<body id="impress">
+	<section class="step slide" data-x="0" data-y="0">
+		<h1 style="position:relative;font-size:80px;">
+			深究<IMG src="./asset/js.jpg" width="80" height="80" style="position:relative;left:20px;top:15px;"><br/>
+			异步编程模型
+		</h1>
+		<ul style="font-size:20px;position:relative;left:300px;top:80px;">
+			<li>&emsp;&emsp;<img src="./asset/myface.png" width="80" height="80" style="border-radius:50%;"></li>
+			<li>艺名: 肥仔John ^_^</li>
+			<li>本名: 黄智安</li>
+			<li>@/Midea/QMS</li>
+		</ul>
+	</section>
+
+	<section class="step slide" data-x="0" data-y="500" data-rotate-y="90">
+		<h1>目录</h1>
+		<ol style="font-size:35px;font-weight:bold;line-height:1.5">
+			<li>1. 从Callback Hell说起</li>
+			<li>2. 初次尝试——EventProxy</li>
+			<li>3. 曙光的出现——Promise</li>
+			<li>4. 真正的光明——Coroutine</li>
+			<li>5. 语法级支持——async和await</li>
+		</ol>
+	</section>
+	<section class="step slide" data-x="0" data-y="1000" data-rotate-y="180">
+		<h1>其实我想说的是</h1>
+<pre><code>a(function(){
+	b(function(){
+		c(function(){
+			d()
+		})
+	})
+})</code></pre>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;To
+<pre><code>;(async function(){
+	await a()
+	await b()
+	await c()
+	await d()
+}())</code></pre>
+	</section>
+
+	<section class="step slide" data-y="1500" data-rotate-y="270">
+		<h1>前置知识点</h1>
+		<p>假如我们通过以下代码实现60秒后执行某项操作</p>
+<pre><code>const deadline = Date.now() + 60*1000
+while(deadline > Date.now());
+console.log('doSomething')</code></pre>
+<pre>浏览器将假死60秒，假死，死……
+
+一般采用异步调用的方式来实现</pre>
+<pre><code>const deadline = Date.now() + 60*1000
+;(function _(){
+	if (deadline > Date.now()) return setTimeout(_, 100)
+	console.log('doSomething')
+}())</code></pre>
+	</section>
+
+	<section class="step slide" data-y="2000" data-rotate-y="360">
+		<h1>堆，栈运行情况</h1>
+		<img src="./asset/default.svg" width="800" height="500">
+	</section>
+
+	<section class="step slide" data-y="2500" data-rotate-y="450">
+		<h1>到底什么是</h1>
+		<h1>异步</h1>
+		<h1>同步</h1>
+		<h1>阻塞</h1>
+		<h1>非阻塞</h1>
+	</section>
+
+	<section class="step slide" data-y="3000" data-rotate-y="540">
+		<img src="./asset/ak.png" width="800" height="600">
+	</section>
+
+	<section class="step slide" data-y="3500" data-rotate-y="630">
+		<pre>
+对于如setTimeout等方法，
+本来就不存在用户空间和内核空间的数据通信问题，
+因此异步更多是描述<b style="font-size:40px;">非阻塞</b>这一特性。
+
+		</pre>
+		<h1>异步调用的特点</h1>
+		<ol>
+			<li>1. 非阻塞</li>
+			<li>2. 操作结果将于不明确的未来返回</li>
+		</ol>
+	</section>
+	
+	<section class="step slide" data-y="4000" data-rotate-y="720">
+		<h1 style="font-size:100px;">从</h1>
+		<h1 style="font-size:100px;">Callback Hell <small style="font-size:30px;">(help~.~)</small></h1>
+		<h1 style="font-size:100px;">说起</h1>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="1000">
+		<img src="./asset/tomato.jpg" width="800" height="600">
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="2000">
+		<ol style="line-height:1.5">
+			<li>1. 番茄切块(代号a)</li>
+			<li>2. 鸡蛋打成蛋液(代号b)</li>
+			<li>3. 蛋液煮成半熟(代号c)</li>
+			<li>4. 将蛋切成块(代号d)</li>
+			<li>5. 番茄与鸡蛋块一起炒熟(代号e)</li>
+		</ol>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="3000">
+		<h1>假设各步骤都是同步调用</h1>
+<br>
+->番茄切块->鸡蛋打成蛋液->蛋液煮成半熟->将蛋切成块->番茄与鸡蛋块一起炒熟
+<br>
+		<pre>
+			<code>a()
+b()
+c()
+d()
+e()</code>
+		</pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="4000">
+		<h1>假设各步骤都是异步调用</h1>
+情况1——所有步骤均无状态依赖
+<br>
+<br>
+<pre>
+->番茄切块
+->鸡蛋打成蛋液
+->蛋液煮成半熟
+->将蛋切成块
+->番茄与鸡蛋块一起炒熟
+</pre>
+<pre><code>a()
+b()
+c()
+d()
+e()</code>
+		</pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="5000">
+情况2——步骤间存在线性的状态依赖
+<br>
+<br>
+->番茄切块->鸡蛋打成蛋液->蛋液煮成半熟->将蛋切成块->番茄与鸡蛋块一起炒熟
+<br>
+<pre><code>
+a('番茄', function(v番茄块){
+	b('鸡蛋', function(v蛋液){
+		c(v蛋液, function(v半熟的鸡蛋){
+			d(v半熟的鸡蛋, function(v鸡蛋块){
+				e(v番茄块, v鸡蛋块)
+			})
+		})
+	})
+})</code>
+		</pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="6000">
+情况3——步骤间存在复杂的状态依赖
+<br>
+<pre>
+->番茄切块					      |->番茄与鸡蛋块一起炒熟
+->鸡蛋打成蛋液->蛋液煮半熟->切成蛋块|
+</pre>
+<pre><code>/* 定义任务 */
+const a = (v番茄, cb) => doAsyncIO(a, '番茄块', cb)
+const b = (v鸡蛋, cb) => doAsyncIO(b, '蛋液', cb)
+const c = (v蛋液, cb) => doAsyncIO(c, '半熟的鸡蛋', cb)
+const d = (v半熟的鸡蛋, cb) => doAsyncIO(d, '鸡蛋块', cb)
+const e = (v番茄块, v鸡蛋块, cb) 
+				=> doAsyncIO(e, '番茄炒鸡蛋', cb)
+[a,b,c,d,e].forEach(task =>{
+	task.state = {done: false}
+	task.done = value => {
+		task.state = {value, done: true}
+		return value
+	}
+})</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="7000">
+<pre><code>/* 执行任务 */
+a('番茄')
+b('鸡蛋', function(v蛋液){
+	c(v蛋液, function(v半熟的鸡蛋){
+		d(v半熟的鸡蛋)
+	})
+})
+poll = () => {
+	if (a.state.done && d.state.done);else
+		return setTimeout(poll, 100)
+
+	e(a.state.value, d.state.value, ()=>console.log('搞定'))
+}
+setTimeout(poll, 0)</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="8000">
+		<h1>异步调用所带来的问题是</h1>
+		<ol>
+			<li>1. 状态依赖关系难以表达，更无法使用`if...else`,`while`等流程控制语句。</li>
+			<li>2. 无法提供`try...catch`异常机制来处理异常</li>
+		</ol>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="9000">
+		<h1>初次尝试——EventProxy</h1>
+		1. 发布订阅系统<br>
+		2. 通过once、after等事件订阅方法实现异步调用下的流程控制
+		<pre><code>const ep = new EventProxy()
+/* 定义任务 */
+const a = v番茄 => doAsyncIO('番茄块', ep.emit.bind(ep,'a'))
+const b = v鸡蛋 => doAsyncIO('蛋液', ep.emit.bind(ep,'b'))
+const c = v蛋液 
+	    => doAsyncIO('半熟的鸡蛋', ep.emit.bind(ep,'c'))
+const d = v半熟的鸡蛋 
+	    => doAsyncIO('鸡蛋块', ep.emit.bind(ep,'d'))
+const e = (v番茄块, v鸡蛋块) 
+	    => doAsyncIO('番茄炒鸡蛋', ep.emit.bind(ep,'e'))</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="10000">
+		<pre><code>/* 定义任务间的状态依赖 */
+ep.once('b',c)
+ep.once('c',d)
+ep.all('a', 'd', e)
+
+/* 执行任务 */
+a()
+b()</code></pre>
+		<br>
+另外通过`error`事件提供对异常机制的支持
+<pre><code>ep.on('error', err => {
+	console.log(err)
+})</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="11000">
+		<h1>EventProxy遗留的问题</h1>
+		Pub/Sub模式<br>
+		<ol style="line-height:1.5">
+			<li>优点：降低模块间的耦合度</li>
+			<li>缺点：太解耦了……</li>
+		</ol>
+		<br>
+		<span style="font-size: 40px;">使整个系统结构松散难以看出逻辑主线</span><br>
+		<br>
+		<br>
+		<br>
+		<b style="font-size: 50px;">我们希望的是代码结构更紧凑一些</b>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="12000">
+		<h1>曙光的出现——Promise</h1>
+		已经被ES2015纳入囊中的Promises/A+规范及其实现<br>
+<br>
+<b style="font-size:60px;position:relative;top:-80px;">Promise = </b><img src="./asset/bill.jpg" width="400" height="200"><br>
+<b>不同点</b>：只要持有Promise实例，无论索取多少次，都能拿到同样的结果，而麦当劳显然只能给你一份食物而已。
+<img src="./asset/mc.jpg">
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="13000">
+		<pre><code>const p1 = new Promise(function(resolve, reject){
+	/*	工厂函数
+	 *	resolve函数表示当前Promise正常结束,
+	 *	例子:　setTimeout(()=>resolve('bingo'), 1000)
+	 *	reject函数表示当前Promise发生异常,
+	 *	例子:　setTimeout(()=>reject(Error('OMG!')), 1000)
+	 */
+})
+const p2 = p1.then(
+	function fulfilled(val){
+		return val + 1
+	}
+	, function rejected(err){
+		/*处理p1工厂函数中调用reject传递来的值*/
+	}
+)</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="14000">
+		<pre><code>const p3 = p2.then(
+	function fulfilled(val){
+		return new Promise(function(resolve){
+				setTimeout(()=>resolve(val+1), 10000)
+			})
+	}
+	, function rejected(err){
+		/*处理p1或p2调用reject或throw error的值*/
+	}
+)
+p3.catch(function rejected(err){
+		/*
+		 *	处理p1或p2或p3调用reject
+		 *	或throw error的值
+		 */
+	})</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="15000">
+		<h1>Promises/A+中规定</h1>
+		<ol>
+			<li>1. Promise状态为pending（默认值）、fulfilled或rejected</li>
+			<li>2. 状态仅能从pending->fulfilled或pending->rejected</li>
+			<li>3. 多个Promise构成责任链，状态变化事件回调函数的处理结果会影响下一个Promsie实例的状态</li>
+		</ol>
+		<div style="font-size:20px;">
+			<pre><code>new Promise(function(resolve, reject){})，带工厂函数的构造函数
+Promise.prototype.then(fulfilled()=>{}, rejected()=>{})，订阅Promise实例状态
+	从pending到fulfilled，和从pending到rejected的变化
+Promise.prototype.catch(rejected()=>{})，订阅Promise实例状态从pending到rejected的变化
+Promise.resolve(val)，生成一个状态为fulfilled的Promise实例
+Promise.reject(val)，生成一个状态为rejected的Promise实例
+Promise.all(array)，生成一个Promise实例，当array中所有Promise实例状态
+	均为fulfilled时，该Promise实例的状态将从pending转换为fulfilled，若array
+	中某个Promise实例的状态为rejected，则该实例的状态将从pending转换为rejected.
+Promise.race(array)，生成一个Promise实例,当array中某个Promise实例状态发生转换，
+	那么该Promise实例也随之转换</code></pre>
+		</div>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="16000">
+		<pre><code>/* 定义任务 */
+const a = v番茄 => new Promise(doAsyncIO('番茄块'))
+const b = v鸡蛋 => new Promise(doAsyncIO('蛋液'))
+const c = v蛋液 => new Promise(doAsyncIO('半熟的鸡蛋'))
+const d = v半熟的鸡蛋 => new Promise(doAsyncIO('鸡蛋块'))
+const e = ([v番茄块, v鸡蛋块]) 
+	     => new Promise(doAsyncIO('番茄炒鸡蛋'))
+/* 执行任务 */
+Promise.all([
+	a('番茄'),
+	b('鸡蛋').then(c).then(d)
+]).then(e).catch(err => {
+	  console.log(err)
+  })</code></pre>
+		<b>最大特点：独立的可存储的异步调用结果</b><br>
+其他特点：fulfilled和rejected函数异步执行
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="17000">
+		jQuery作为前端必备工具,也为我们提供类似与Promise的工具，那就是jQuery.Deffered<br>
+		<pre><code>const deffered = $.getJSON('dummy.js')
+deffered.then(function(val1){
+	console.log(val1)
+	return !val1
+},function (err){
+	console.log(err)
+}).then(function(val2){
+	console.log(val2)
+})</code></pre>
+		但jQuery.Deferred并不是完整的Promise/A+的实现。如：<br>
+1. jQuery1.8之前上述代码val2的值与val1一样，jQuery1.8及以后上述代码val2的值就是!val1了。<br>
+2. fulfilled和rejected函数采用同步执行
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="18000">
+		<h1>Promise的遗留问题</h1>
+		<pre><code>const a = () => Promise.resolve('a')
+const b = (v1) => Promise.resolve('b')
+const c = (v2, v1) => console.log(v1)
+
+a().then(b).then(c)
+
+
+
+
+/*
+ *	const b = (v1) => [Promise.resolve('b'), v1]
+ *	const c = ([v2, v1]) => console.log(v1)
+ */</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="19000">
+		<h1>真正的光明——Coroutine</h1>
+		Coroutine中文就是协程，意思就是线程间采用协同合作的方式工作，而不是抢占式的方式工作。<br><br>
+
+		由于JS是单线程运行的，所以这里的Coroutine就是<br>
+		<b style="font-size:45px;line-height:1.4">一个可以部分执行后退出，后续可在之前退出的地方继续往下执行的函数.</b>
+<pre><code>
+function coroutine(){
+	yield console.log('c u later!')
+	console.log('welcome guys!')
+}</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="20000">
+		<h1>Generator Function</h1>
+其实就是迭代器，跟C#的IEnumerator和Java的Iterator一样。
+<pre><code>function* enumerable(){
+	yield 1
+	yield 2
+}
+for (let num of enumerable())console.log(num)</code></pre>
+现在我们将1,2替换为代码
+<pre><code>function* enumerable(msg){
+  console.log(msg)
+  var msg1 = yield msg + ' after ' // 断点
+  console.log(msg1)
+  var msg2 = yield msg1 + ' after' // 断点
+  console.log(msg2 + ' over')
+}</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="21000">
+编译器会将上述代码转换成
+<pre><code>const enumerable = function(msg){
+  var state = -1
+  return {
+    next: function(val){
+      switch(++state){
+         case 0:	console.log(msg + ' after')
+			break
+         case 1:	var msg1 = val
+			console.log(val + ' after')
+			break
+         case 2:	var msg2 = val
+			console.log(msg2 + ' over')
+			break
+      }
+    }}}</code></pre>
+调用next函数就可以从之前退出的地方继续执行了。
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="22000">
+		其实Generator Function实质上就是定义一个有限状态机，<br>
+		然后通过Generator Function实例的next,throw和return方法触发状态迁移。<br>
+<pre><code>next(val)，返回`{value: val1, done: true|false}`
+throw(err)，在上次执行的位置抛出异常
+return(val)，状态机的状态迁移至终止态，
+		并返回`{value: val, done: true}`</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="23000">
+现在我们用Gererator Function来做番茄炒蛋
+<pre><code>/* 定义任务 */
+const a = v番茄 => new Promise(doAsyncIO('番茄块'))
+const b = v鸡蛋 => new Promise(doAsyncIO('蛋液'))
+const c = v蛋液 => new Promise(doAsyncIO('半熟的鸡蛋'))
+const d = v半熟的鸡蛋 => new Promise(doAsyncIO('鸡蛋块'))
+const e = (v番茄块, v鸡蛋块) 
+	     => new Promise(doAsyncIO('番茄炒鸡蛋'))
+</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="24000">
+<pre><code>/* 定义任务间的状态依赖 */
+function* coroutineFunction(){
+	try{
+		var p番茄块 = a('番茄')
+		var v蛋液 = yield b('鸡蛋')
+		var v半熟的鸡蛋 = yield c(v蛋液)
+		var v鸡蛋块 = yield d(v半熟的鸡蛋)
+		var v番茄块 = yield p番茄块
+		var v番茄抄鸡蛋 = yield e(v番茄块, v鸡蛋块)
+	}
+	catch(e){
+		console.log(e.message)
+	}
+}
+</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="25000">
+<pre><code>/* 执行任务 */
+const coroutine = coroutineFunction()
+throwError = coroutine.throw.bind(coroutine)
+coroutine.next().value.then(function(v蛋液){
+	coroutine.next(v蛋液).then(function(v半熟的鸡蛋){
+		coroutine.next(v半熟的鸡蛋).then(function(v鸡蛋块){
+			coroutine.next().then(function(v番茄块){
+				coroutine.next(v番茄块).then(function(v番茄抄鸡蛋){
+					coroutine.next(v番茄抄鸡蛋)
+				}, throwError)
+			}, throwError)
+		}, throwError)
+	}, throwError)
+})
+</code></pre>
+悲催又回到Callback Hell
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="26000">
+		<h1>Coroutine的奥义</h1>
+		1. 以同步代码的风格来定义任务间的执行顺序<br>
+		2. 执行模块才是Callback Hell<br>
+		<pre style="font-size: 50px;line-height:1.5">
+<span style="color:#E00; font-size:55px">		奥义！！！</span>
+<b>Callback Hell是
+根据CoroutineFunction的内容
+生成的！</b>
+		</pre>
+		<pre><code>iPromise(coroutineFunction)</code></pre>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="27000">
+<pre><code>
+iPromise(function*(){
+	try{
+		var p番茄块 = a('番茄')
+		var v蛋液 = yield b('鸡蛋')
+		var v半熟的鸡蛋 = yield c(v蛋液)
+		var v鸡蛋块 = yield d(v半熟的鸡蛋)
+		var v番茄块 = yield p番茄块
+		var v番茄抄鸡蛋 = yield e(v番茄块, v鸡蛋块)
+	}
+	catch(e){
+		console.log(e.message)
+	}
+})
+</code></pre>
+舒爽啊！
+	</section>
+
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="28000">
+		<h1>语法级支持—async和await</h1>
+ES7引入了async和await两个关键字，Node.js v7.2.0支持这两货。于是Coroutine写法就更酸爽了.
+<pre><code>async function coroutine(){
+	try{
+		var p番茄块 = a('番茄')
+		var v蛋液 = await b('鸡蛋')
+		var v半熟的鸡蛋 = await c(v蛋液)
+		var v鸡蛋块 = await d(v半熟的鸡蛋)
+		var v番茄块 = await p番茄块
+		var v番茄抄鸡蛋 = await e(v番茄块, v鸡蛋块)
+	}
+	catch(e){ console.log(e.message) }
+}
+coroutine()</code></pre>
+	</section>
+
+	
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="29000">
+<br><br><br>
+		<pre style="font-size:40px;line-height:1.5">到这里各位应该会想<br>
+	<b style="font-size:50px;">“不就做个西红柿炒鸡蛋吗？
+		      搞这么多,至于吗？”</b></pre><br><br><br>
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="30000" style="font-size: 40px;line-height:1.5">
+		其实我的看法是<br>
+1. 对于状态依赖简单的情况下，callback的方式足矣;<br>
+2. 对于状态依赖复杂（譬如做个佛跳墙等大菜时），Promise或Coroutine显然会让代码更简洁直观，更容易测试因此bug更少，更容易维护因此更易被优化。
+	</section>
+
+	<section class="step slide" data-y="4000" data-rotate-y="720" data-x="31000">
+		<b>曾经</b>我梦想有一天所有浏览器都支持Promise,async和await，大家可以不明就里地写出coroutine，完美地处理异步调用的各种问题。<br>
+		直到有一天知道世上又多了<img src="./asset/rx.jpg">这货,不说了继续填坑去……
+		<img src="./asset/jiong.jpg">
+		<b style="position:relative;left:20px;top:-70px;font-size:100px">谢谢;)</b>
+	</section>
+
+	<script src="./lib/highlight.pack.js"></script>
+	<script src="./node_modules/impress.js/js/impress.js"></script>
+	<script>
+		impress().init()
+		hljs.initHighlightingOnLoad()
+	</script>
+</body>
+</html>

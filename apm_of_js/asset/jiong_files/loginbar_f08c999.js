@@ -1,0 +1,1 @@
+define("common:widget/loginbar/loginbar",function(e){function i(){this.ispoped=!1}e("common:widget/ui/base/base"),e("common:widget/ui/loginBox/loginBox"),e("common:widget/ui/base/EventDispatcher").eventCenter;return i.prototype={init:function(){window.isFreeze=!1}},new i});

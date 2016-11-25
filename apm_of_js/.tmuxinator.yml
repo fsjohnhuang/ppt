@@ -1,0 +1,11 @@
+name: spm_js
+root: ./
+pre_window: nvm use node
+
+windows:
+  - keynote: vim keynote.md
+  - dev:
+      layout: main-vertical
+      panes:
+        - vim
+        - node --harmony repl.js
