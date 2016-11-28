@@ -2,7 +2,7 @@
  * Coroutine
  */
 var {trace, id, compose} = require('./utils')
-var iPromise = require('iPromise/src/iPromise')
+var iPromise = require('iPromise')
 
 const doAsyncIO = value => (resolve) => setTimeout(()=>compose(resolve, trace)(value), Math.random() * 1000)
 
@@ -20,7 +20,7 @@ exports.exec = function(err = false){
 	iPromise(function *(){
 		try{
 			var p番茄块 = a('番茄')
-			var v蛋液 = yield (err ? pErr : b('鸡蛋'))
+			var v蛋液 = yield (err ? pErr : (pErr.catch(e=>{}), b('鸡蛋')))
 			var v半熟的鸡蛋 = yield c(v蛋液)
 			var v鸡蛋块 = yield d(v半熟的鸡蛋)
 			var v番茄块 = yield p番茄块

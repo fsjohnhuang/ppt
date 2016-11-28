@@ -17,7 +17,7 @@ exports.exec = async function(err = false){
 	let pErr = new Promise((resolve, reject)=>setTimeout(()=>reject(Error('鸡蛋坏了!')), Math.random() * 1000))
 	try{
 		var p番茄块 = a('番茄')
-		var v蛋液 = await (err ? pErr : b('鸡蛋'))
+		var v蛋液 = await (err ? pErr : (pErr.catch(e=>{}), b('鸡蛋')))
 		var v半熟的鸡蛋 = await c(v蛋液)
 		var v鸡蛋块 = await d(v半熟的鸡蛋)
 		var v番茄块 = await p番茄块
